@@ -5,12 +5,12 @@ import numpy as np
 from transformers import AutoTokenizer, AutoModel
 from Bio.PDB import PDBParser, PPBuilder
 
-# Load ProtBERT tokenizer and model
+# load ProtBERT tokenizer and model
 tokenizer = AutoTokenizer.from_pretrained("Rostlab/prot_bert", do_lower_case=False)
 model = AutoModel.from_pretrained("Rostlab/prot_bert")
 
 def sequence_from_pdb(pdb_file, chain_id):
-    """Extracts amino acid sequence from a PDB file for a given chain."""
+    # extracts sequence from PDB
     parser = PDBParser(QUIET=True)
     structure = parser.get_structure('protein', pdb_file)
     
@@ -23,8 +23,8 @@ def sequence_from_pdb(pdb_file, chain_id):
     return None
 
 def prottrans_embeddings(sequence):
-    """Generates ProtBERT embeddings for a given protein sequence."""
-    formatted_seq = " ".join(list(sequence))  # Format sequence for ProtBERT
+    # generates embeddings using ProtBERT
+    formatted_seq = " ".join(list(sequence))  
     encoded_input = tokenizer(formatted_seq, return_tensors='pt')
 
     with torch.no_grad():
@@ -34,13 +34,12 @@ def prottrans_embeddings(sequence):
     return embeddings
 
 def save_embeddings_as_csv(embeddings, output_file):
-    """Saves per-residue embeddings as a CSV file."""
+    # saves embeddings to CSV
     df = pd.DataFrame(embeddings)
     df.to_csv(output_file, index=False)
-    print(f"Embeddings saved to {output_file}")
 
 def read_chain_ids(chain_file):
-    """Reads chain IDs from a file and returns a dictionary mapping PDB files to chain IDs."""
+    # maps PDBs to chain ids
     chain_dict = {}
     with open(chain_file, 'r') as f:
         for line in f:
@@ -51,7 +50,7 @@ def read_chain_ids(chain_file):
     return chain_dict
 
 def process_pdb(pdb_folder, output_folder, chain_file):
-    """Processes all PDB files using chain IDs from a file, extracts embeddings, and saves them."""
+    # obtains embeddings from the specific chain of the PDB
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
@@ -75,8 +74,8 @@ def process_pdb(pdb_folder, output_folder, chain_file):
             print(f"Skipping {pdb_file} (No valid sequence found for chain {chain_id}).")
 
 if __name__ == "__main__":
-    pdb_folder = "pdbs"  
-    output_folder = "embeddings"  
-    chain_file = "chain_ids.txt"  
+    pdb_folder = "training_pdbs"  
+    output_folder = "protbert_embeddings"  
+    chain_file = "chain_mapping.txt"  
 
     process_pdb(pdb_folder, output_folder, chain_file)
