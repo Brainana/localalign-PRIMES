@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import csv
 import sys
+print(sys.executable)
+print(sys.version)
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -12,18 +14,13 @@ def get_all_diffs(csv_path):
         next(reader, None)  # skip header row
 
         for row_idx, row in enumerate(reader, start=2):
-            count = 0
             for col_idx, cell in enumerate(row[1:], start=2):
                 try:
                     val = float(cell)
                     diffs.append(abs(val))
-                    if val > 0.5:
-                        count += 1
                 except ValueError:
                     print(f"Warning: non-numeric value at row {row_idx}, col {col_idx}: '{cell}'", file=sys.stderr)
                     continue
-            if count > 50:
-                print(row_idx)
 
     return diffs
 
@@ -51,7 +48,7 @@ def get_all_percent_diffs(diff_csv_path, orig_csv_path):
     return percent_diffs
 
 def main():
-    diff_file = "tm_score_diff_seq.csv"
+    diff_file = "tm_score_diff_transformer.csv"
     orig_file = "training_data/training_tm_score_matrix.csv"
 
     diffs = get_all_diffs(diff_file)

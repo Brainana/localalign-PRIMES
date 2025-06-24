@@ -1,8 +1,8 @@
 import pandas as pd
 
 matrix1_file = "testing_data/testing_tm_score_matrix.csv"
-matrix2_file = "pred_tm_score_matrix_seq.csv"
-difference_file = "tm_score_diff_seq.csv"
+matrix2_file = "pred_tm_score_matrix_transformer.csv"
+difference_file = "tm_score_diff_transformer.csv"
 
 df1 = pd.read_csv(matrix1_file, index_col=0)
 df2 = pd.read_csv(matrix2_file, index_col=0)
